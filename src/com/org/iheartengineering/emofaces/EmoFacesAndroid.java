@@ -4,6 +4,8 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.view.Gravity;
 import android.widget.*;
+import android.widget.RelativeLayout.LayoutParams;
+
 import java.io.*;
 
 /**
@@ -15,22 +17,49 @@ public class EmoFacesAndroid {
 	EmoFaces emotions = null;
 	TextView textView = null;
 	Activity activity = null;
-	
+	RelativeLayout layout = null;
+	public boolean randomFaces = false;
+	int interval = 1000;
 	public EmoFacesAndroid() 
 	{
 	}
 	
-	public void Init(Activity activity)
+	public void Init(Activity activity, RelativeLayout layout)
 	{
 		this.activity = activity;
+		this.layout = layout;
 		if (emotions == null) {
 			emotions = new EmoFaces();
 			// Load default emotions // Also from file
 			LoadDefaultEmotions();
+			//layout.removeAllViews();
 			emotions.currentEmotion = emotions.emotions.get("default");
+			layout.addView(GetCurrentEmotion(), setLayoutParams());
+			activity.setContentView(layout);
 			// Add action listeners
 			InitializeButtons();
+			
+			if (this.randomFaces) {
+				if (t== null) {
+					this.activity.runOnUiThread(t = new RandomFaceThread(this));
+					t.start();
+				}
+			}
 		}
+	}
+	
+	private RelativeLayout.LayoutParams setLayoutParams() 
+    {
+    	RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+        lp.addRule(RelativeLayout.CENTER_IN_PARENT, 1);        
+        lp.addRule(RelativeLayout.CENTER_HORIZONTAL, 1);
+        lp.addRule(RelativeLayout.CENTER_VERTICAL, 1);
+        return lp;
+    }
+	
+	public void SetRandomFaces(boolean isRandom, int interval) {
+		this.randomFaces = isRandom;
+		this.interval = interval;
 	}
 	
 	public void SetEmotion(String name) {
@@ -66,5 +95,10 @@ public class EmoFacesAndroid {
         view.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.CENTER_VERTICAL);
         view.setPadding(0, 0, 0, 0);
         return view;
+	}
+	
+	static RandomFaceThread t = null;
+	public void Run() {
+		
 	}
 }
