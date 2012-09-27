@@ -9,13 +9,13 @@ public class Emo {
 	}
 	
 	public Emo(String name, String emoticon) {
-		this.Name = name;
+		this.name = name;
 		this.Emoticon = emoticon;
 		this.Source = null;
 	}
 	
 	public Emo(String name, String emoticon, String source) {
-		this.Name = name;
+		this.name = name;
 		this.Emoticon = emoticon;
 		this.Source = source;
 	}
@@ -23,7 +23,7 @@ public class Emo {
 	/**
 	 *  The name of the emotion
 	 */
-	public String Name;
+	public String name;
 	
 	/**
 	 * The text representation of the emotion
@@ -38,7 +38,7 @@ public class Emo {
 	@Override
 	public int hashCode() {
 		int hash = 13;
-		hash = 31 * hash + Name.hashCode();
+		hash = 31 * hash + name.hashCode();
 		hash = 31 * hash + Emoticon.hashCode();
 		hash = 31 * hash + ((Source == null) ? 0 : Source.hashCode());
 		return hash;
@@ -51,7 +51,7 @@ public class Emo {
 		if (obj.getClass() != this.getClass())  return false;
 		
 		Emo that = (Emo)obj;
-		if ((this.Name != that.Name) || (this.Emoticon != that.Emoticon)) return false;
+		if ((this.name != that.name) || (this.Emoticon != that.Emoticon)) return false;
 		
 		//TODO: May remove this?
 		if ((this.Source != null) && (this.Source != that.Source)) return false;

@@ -1,6 +1,6 @@
 package com.org.iheartengineering.emofaces;
 
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
 
 public class EmoFaces {	
@@ -15,10 +15,10 @@ public class EmoFaces {
 	 * @param emotion - The emotion to be added
 	 */
 	public void addEmotion(Emo emotion) {
-		if (emotions.containsKey(emotion.Name)) {
-			throw new IllegalArgumentException("The name " + emotion.Name + " already exists. Try a different name!");
+		if (emotions.containsKey(emotion.name)) {
+			throw new IllegalArgumentException("The name " + emotion.name + " already exists. Try a different name!");
 		}
-		emotions.put(emotion.Name, emotion);
+		emotions.put(emotion.name, emotion);
 	}
 	
 	/**
@@ -31,6 +31,12 @@ public class EmoFaces {
 		}
 	}
 	
+	public void addEmotionsFromFile(InputStream inputStream) {
+		EmoFaceReader reader = new EmoFaceReader();
+		for (Emo e : reader.readEmoticonsFromStream(new InputStreamReader(inputStream))) {
+			emotions.put(e.name,  e);
+		}
+	}
 	/**
 	 * Get emotions from file
 	 * @param filename - File which contains the emotions to be added
@@ -38,7 +44,9 @@ public class EmoFaces {
 	public void addEmotionsFromFile(String filename) {
 		EmoFaceReader reader = new EmoFaceReader();
 		try {
-			emotions = reader.ReadEmoticonsFromFile(filename);			
+			for (Emo e : reader.readEmoticonsFromFile(filename)) {
+				emotions.put(e.name,  e);
+			}			
 		} catch (IOException ex) {
 			System.out.println("Problem occured reading emoticon from file...Here's the stack trace!");
 			ex.printStackTrace();
