@@ -1,7 +1,8 @@
 package com.org.iheartengineering.emofaces;
 
-import java.util.HashMap;
+import java.util.*;
 import java.io.*;
+import android.annotation.TargetApi;
 import android.util.JsonReader; //TODO: Maybe get a better json reader? (potential optimizaton)
 
 /**
@@ -9,6 +10,7 @@ import android.util.JsonReader; //TODO: Maybe get a better json reader? (potenti
  * @author Errol Markland
  *
  */
+@TargetApi(11)
 public class EmoFaceReader 
 {	
 	public EmoFaceReader()
@@ -21,8 +23,8 @@ public class EmoFaceReader
 	 * @return A list of Emo Objects
 	 * @throws IOException - File may not exist at specified path 
 	 */
-	public HashMap<String, Emo> ReadEmoticonsFromFile(String filepath) throws IOException {
-		return (filepath == null) ? null : ReadEmoticons(new FileReader(filepath));
+	public ArrayList<Emo> readEmoticonsFromFile(String filepath) throws IOException {
+		return (filepath == null) ? null : readEmoticonsFromStream(new FileReader(filepath));
 	}
 	
 	/**
@@ -31,8 +33,8 @@ public class EmoFaceReader
 	 * @return - A list of Emo Objects.
 	 * @throws IOException - Error with string being read
 	 */
-	public HashMap<String, Emo> ReadEmoticonsFromJson(String jsonText) throws IOException {
-		return (jsonText == null) ? null : ReadEmoticons(new StringReader(jsonText));
+	public ArrayList<Emo> ReadEmoticonsFromJson(String jsonText) throws IOException {
+		return (jsonText == null) ? null : readEmoticonsFromStream(new StringReader(jsonText));
 	}
 	
 	/**
@@ -42,8 +44,8 @@ public class EmoFaceReader
 	 * @throws IOException - There is an issue with the input reader
 	 */
 	@SuppressWarnings("resource")
-	private HashMap<String, Emo> ReadEmoticons(Reader in) throws IOException {
-		HashMap<String, Emo> map = new HashMap<String, Emo>();
+	public ArrayList<Emo> readEmoticonsFromStream(Reader in) throws IOException {
+		ArrayList<Emo> emotionList = new ArrayList<Emo>();
 		JsonReader reader = new JsonReader(in);
 		reader.beginArray();
 		
@@ -56,20 +58,25 @@ public class EmoFaceReader
 			reader.beginObject();
 			// Loop through the object's key-value pairs
 			while (reader.hasNext()) {
-				String key = reader.nextName().toLowerCase();
-				if (key == "name") {				
+				String key = null;
+				try {
+					key = reader.nextName().toLowerCase();
+				} catch (Exception ex) {
+				}
+				
+				if (key.equals("name")) {				
 					name = reader.nextString();
-				} else if (key == "emoticon") {
+				} else if (key.equals("emoticon")) {
 					emoticon = reader.nextString();
-				} else if (key == "source") {
+				} else if (key.equals("source")) {
 					source = reader.nextString();
 				}
 			}
 			reader.endObject();
 			
-			map.put(name, new Emo(name, emoticon, source));
+			emotionList.add(new Emo(name, emoticon, source));
 		}
 		reader.endArray();
-		return map;
+		return emotionList;
 	}
 }

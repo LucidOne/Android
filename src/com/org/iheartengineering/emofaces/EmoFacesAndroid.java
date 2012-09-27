@@ -4,8 +4,7 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.view.Gravity;
 import android.widget.*;
-
-import java.util.*;
+import java.io.*;
 
 /**
  * Android implementation of the Emo-Faces Program
@@ -24,21 +23,14 @@ public class EmoFacesAndroid {
 	public void Init(Activity activity)
 	{
 		this.activity = activity;
-		emotions = new EmoFaces();
-		// Load default emotions // Also from file
-		LoadDefaultEmotions();
-		
-		// Load files from pictures directory
-		
-		//TODO: Create directory to load from
-		/*for(String file : files) {
-			// do stuff
-		}*/
-		
-		String firstEmo = emotions.emotions.keySet().iterator().next();
-		emotions.currentEmotion = emotions.emotions.get(firstEmo);
-		// Add action listeners
-		InitializeButtons();
+		if (emotions == null) {
+			emotions = new EmoFaces();
+			// Load default emotions // Also from file
+			LoadDefaultEmotions();
+			emotions.currentEmotion = emotions.emotions.get("default");
+			// Add action listeners
+			InitializeButtons();
+		}
 	}
 	
 	public void SetEmotion(String name) {
@@ -47,15 +39,14 @@ public class EmoFacesAndroid {
 		}
 	}
 	
-	
 	private void LoadDefaultEmotions() {
-		ArrayList<Emo> emos = new ArrayList<Emo>();
-		emos.add(new Emo("Excited", ":D"));
-		emos.add(new Emo("Happy", ":)"));
-		emos.add(new Emo("Indifferent", ":|"));
-		emos.add(new Emo("Sad", ":("));
-		emos.add(new Emo("Angry", ">:O"));
-		emotions.addEmotions(emos);
+		try {
+			InputStream s = this.activity.getAssets().open("face_packs/default.json");
+			emotions.addEmotionsFromFile(s);
+		} catch (IOException e) {
+			System.out.println("Failed to load face packs");
+			e.printStackTrace();
+		}
 	}
 		
 	private void InitializeButtons() {
@@ -71,8 +62,7 @@ public class EmoFacesAndroid {
         	e = "N/A";
         }
         view.setText(e);
-        view.setTextSize(192.0f);
-        view.setRotation(90);
+        view.setTextSize(128.0f);
         view.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.CENTER_VERTICAL);
         view.setPadding(0, 0, 0, 0);
         return view;
