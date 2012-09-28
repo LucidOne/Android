@@ -1,4 +1,4 @@
-package com.org.iheartengineering.emofaces;
+package com.org.iheartrobotics.emofaces;
 
 /**
  * An object representation representation of an emoticon

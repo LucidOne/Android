@@ -5,7 +5,7 @@
  * should not be modified by hand.
  */
 
-package com.org.iheartengineering.emofaces;
+package com.org.iheartrobotics.emofaces;
 
 public final class R {
     public static final class attr {

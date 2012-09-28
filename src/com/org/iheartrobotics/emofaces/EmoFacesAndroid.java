@@ -1,4 +1,4 @@
-package com.org.iheartengineering.emofaces;
+package com.org.iheartrobotics.emofaces;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -7,6 +7,7 @@ import android.widget.*;
 import android.widget.RelativeLayout.LayoutParams;
 
 import java.io.*;
+import java.util.Random;
 
 /**
  * Android implementation of the Emo-Faces Program
@@ -34,7 +35,8 @@ public class EmoFacesAndroid {
 			LoadDefaultEmotions();
 			//layout.removeAllViews();
 			emotions.currentEmotion = emotions.emotions.get("default");
-			layout.addView(GetCurrentEmotion(), setLayoutParams());
+			textView = GetCurrentEmotion();
+			layout.addView(textView, setLayoutParams());
 			activity.setContentView(layout);
 			// Add action listeners
 			InitializeButtons();
@@ -42,7 +44,7 @@ public class EmoFacesAndroid {
 			if (this.randomFaces) {
 				if (t== null) {
 					this.activity.runOnUiThread(t = new RandomFaceThread(this));
-					t.start();
+					//t.start();
 				}
 			}
 		}
@@ -99,6 +101,25 @@ public class EmoFacesAndroid {
 	
 	static RandomFaceThread t = null;
 	public void Run() {
-		
+		String[] faceSet = emotions.emotions.keySet().toArray(new String[0]);
+		Random rand = new Random();
+		while (this.randomFaces) {
+			// Select face from random.
+			int i = -1;
+			while (i < 0) {
+				i = rand.nextInt(faceSet.length) - 1;
+				System.out.print(i);
+			}
+			
+			emotions.currentEmotion = emotions.getEmotion(faceSet[i]);
+			textView.setText(emotions.currentEmotion.Emoticon);
+
+			try {
+				Thread.sleep(interval);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 	}
 }

@@ -1,4 +1,6 @@
-package com.org.iheartengineering.emofaces;
+package com.org.iheartrobotics.emofaces;
+
+import com.org.iheartrobotics.emofaces.R;
 
 import android.os.Bundle;
 import android.app.Activity;
@@ -17,7 +19,8 @@ public class MainActivity extends Activity {
         if (app == null) {
 	        app = new EmoFacesAndroid();
 	        app.SetRandomFaces(true, 500);
-	        app.Init(this, relativeLayout);	      
+	        app.Init(this, relativeLayout);
+	     //   app.Run();
         }
         
         setContentView(relativeLayout);
