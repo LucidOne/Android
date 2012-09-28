@@ -1,10 +1,13 @@
 package com.org.iheartrobotics.emofaces;
 
 import java.util.Set;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import com.org.iheartrobotics.emofaces.R;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.app.Activity;
 import android.view.Menu;
 import android.view.MotionEvent;
@@ -16,6 +19,8 @@ public class MainActivity extends Activity {
 
 	private RelativeLayout relativeLayout = null;
 	private EmoFacesAndroid app = null;
+	private Handler handler = null;
+	int i = 0;
 	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
@@ -27,9 +32,31 @@ public class MainActivity extends Activity {
 	        app.Init(this, relativeLayout);
 	     //   app.Run();
         }
-        relativeLayout.setOnTouchListener(new TouchListener(app));
+        handler = new Handler();
+        relativeLayout.setOnTouchListener(new TouchListener(app)); 
+        Timer test = new Timer();
+        test.scheduleAtFixedRate(t, 0, 1000);
         setContentView(relativeLayout);
     }
+	
+	 TimerTask t = new TimerTask() {
+		@Override
+		public void run() {
+			update();
+		}
+	};
+	Runnable r = new Runnable() {
+		public void run() {
+			update();
+			handler.postDelayed(r, 1000);
+		}
+		
+	};
+	
+	 void update() {
+		// update app
+		i++;
+	}
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
