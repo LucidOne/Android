@@ -19,42 +19,17 @@ public class MainActivity extends Activity {
 	private EmoFacesAndroid app = null;
 	private Handler handler = null;
 	static Random random = new Random();
-	private int interval = 1000;
-	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         relativeLayout = new RelativeLayout(this);
-        if (app == null) {
-	        app = new EmoFacesAndroid();
-	        app.SetRandomFaces(true, 500);
-	        app.Init(this, relativeLayout);
-	     //   app.Run();
-        }
-        
-        setContentView(relativeLayout);
         handler = new Handler();
-        handler.postAtTime(r, interval);
+        if (app == null) {
+	        app = new EmoFacesAndroid(handler);
+	        app.Init(this, relativeLayout);
+        }
     }
 	
-	private Runnable r = new Runnable() {
-		public void run() {
-			update();
-			handler.postDelayed(this, interval);
-		}
-	};
-
-	 void update() {
-		String nextEmo = getNextEmotion(this.app.emotions.emotions.keySet(), this.app.emotions.currentEmotion.name);
-		if (nextEmo == null) {
-			throw new IllegalArgumentException("Failed to find argument.");
-		}
-		
-		this.app.emotions.currentEmotion = this.app.emotions.emotions.get(nextEmo);
-		this.app.textView.setText(this.app.emotions.currentEmotion.Emoticon);
-		setContentView(this.app.layout);
-	}
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
     	menu.add("Select new emotion");

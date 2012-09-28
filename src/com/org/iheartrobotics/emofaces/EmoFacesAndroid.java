@@ -2,7 +2,11 @@ package com.org.iheartrobotics.emofaces;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.os.Handler;
 import android.view.Gravity;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.View.OnTouchListener;
 import android.widget.*;
 import android.widget.RelativeLayout.LayoutParams;
 
@@ -12,7 +16,7 @@ import java.util.Random;
 /**
  * Android implementation of the Emo-Faces Program
  * @author Errol Markland
- *
+ * TODO: Improve this....overall structure...it's rather messy =x
  */
 public class EmoFacesAndroid {
 	EmoFaces emotions = null;
@@ -20,10 +24,13 @@ public class EmoFacesAndroid {
 	Activity activity = null;
 	RelativeLayout layout = null;
 	public boolean randomFaces = false;
-	public int interval = 1000;
+	public int interval = 1500;
+	public Handler handle = null;
+	Random random = new Random();
 	
-	public EmoFacesAndroid() 
+	public EmoFacesAndroid(Handler handle) 
 	{
+		this.handle = handle; 
 	}
 	
 	public void Init(Activity activity, RelativeLayout layout)
@@ -32,23 +39,50 @@ public class EmoFacesAndroid {
 		this.layout = layout;
 		if (emotions == null) {
 			emotions = new EmoFaces();
-			// Load default emotions // Also from file
+			// Load default emotions
 			LoadDefaultEmotions();
-			//layout.removeAllViews();
 			emotions.currentEmotion = emotions.emotions.get("default");
 			textView = GetCurrentEmotion();
 			layout.addView(textView, setLayoutParams());
 			activity.setContentView(layout);
-			// Add action listeners
-			InitializeButtons();
 			
-			/*if (this.randomFaces) {
-				if (t== null) {
-					this.activity.runOnUiThread(t = new RandomFaceThread(this));
-					//t.start();
-				}
-			}*/
+			setListeners();
 		}
+	}
+	
+	void setListeners() {
+		// random face guy
+		handle.postDelayed(new Runnable() {
+			public void run() {
+				update();
+				handle.postDelayed(this, interval);
+			}
+		}, interval);
+		
+		layout.setOnTouchListener(new OnTouchListener() {
+			public boolean onTouch(View v, MotionEvent event) {
+				if (event.getAction() == MotionEvent.ACTION_DOWN) {
+					update();
+					return true;
+				}
+				return false;
+			}
+		});
+	}
+
+	/**
+	 * Sets the next random face.
+	 */
+	private void update() {
+		String[] keys = emotions.emotions.keySet().toArray(new String[0]);
+		int i = -1;
+		while (i < 0) {
+			i = random.nextInt(keys.length) - 1;
+		}
+		String nextEmo = keys[i];
+		emotions.currentEmotion = emotions.emotions.get(nextEmo);
+		textView.setText(emotions.currentEmotion.Emoticon);
+		activity.setContentView(layout);
 	}
 	
 	private RelativeLayout.LayoutParams setLayoutParams() 
@@ -59,11 +93,6 @@ public class EmoFacesAndroid {
         lp.addRule(RelativeLayout.CENTER_VERTICAL, 1);
         return lp;
     }
-	
-	public void SetRandomFaces(boolean isRandom, int interval) {
-		this.randomFaces = isRandom;
-		this.interval = interval;
-	}
 	
 	public void SetEmotion(String name) {
 		if (emotions.emotions.containsKey(name)) {
@@ -81,11 +110,6 @@ public class EmoFacesAndroid {
 		}
 	}
 		
-	private void InitializeButtons() {
-		//TODO: Do stuff when setting button is pressed
-		//textView = (Button) findViewById(R.id.button1);
-	}
-		
 	@TargetApi(11)
 	public TextView GetCurrentEmotion() {
         TextView view = new TextView(this.activity);
@@ -98,29 +122,5 @@ public class EmoFacesAndroid {
         view.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.CENTER_VERTICAL);
         view.setPadding(0, 0, 0, 0);
         return view;
-	}
-	
-	static RandomFaceThread t = null;
-	public void Run() {
-		String[] faceSet = emotions.emotions.keySet().toArray(new String[0]);
-		Random rand = new Random();
-		while (this.randomFaces) {
-			// Select face from random.
-			int i = -1;
-			while (i < 0) {
-				i = rand.nextInt(faceSet.length) - 1;
-				System.out.print(i);
-			}
-			
-			emotions.currentEmotion = emotions.getEmotion(faceSet[i]);
-			textView.setText(emotions.currentEmotion.Emoticon);
-
-			try {
-				Thread.sleep(interval);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
 	}
 }
