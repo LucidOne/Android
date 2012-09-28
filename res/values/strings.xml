@@ -4,5 +4,7 @@
     <string name="hello_world">Hello world!</string>
     <string name="quit">Close Robo Emo Faces</string>
     <string name="title_activity_main">Robo Emo Faces</string>
+    <string name="bigger">Bigger Robot</string>
+    <string name="smaller">Smaller Robot</string>
 
 </resources>

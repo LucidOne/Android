@@ -21,6 +21,7 @@ import java.util.Random;
  * TODO: Improve this....overall structure...it's rather messy =x
  */
 public class EmoFacesAndroid {
+	public static int fontSize = 128;
 	EmoFaces emotions = null;
 	TextView textView = null;
 	Activity activity = null;
@@ -90,6 +91,7 @@ public class EmoFacesAndroid {
 		String nextEmo = keys[i];
 		emotions.currentEmotion = emotions.emotions.get(nextEmo);
 		textView.setText(emotions.currentEmotion.Emoticon);
+		textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, fontSize);
 		activity.setContentView(layout);
 	}
 	
@@ -120,15 +122,13 @@ public class EmoFacesAndroid {
 		
 	@TargetApi(11)
 	public TextView GetCurrentEmotion() {
-		Resources r = activity.getResources();
-		float px = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 106, r.getDisplayMetrics());
-        TextView view = new TextView(this.activity);
+		TextView view = new TextView(this.activity);
         String e = emotions.currentEmotion.Emoticon;
         if (e == null) {
         	e = "N/A";
         }
         view.setText(e);
-        view.setTextSize(px);
+        view.setTextSize(TypedValue.COMPLEX_UNIT_SP, fontSize);
         view.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.CENTER_VERTICAL);
         view.setPadding(0, 0, 0, 0);
         return view;

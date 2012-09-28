@@ -41,11 +41,20 @@ public class MainActivity extends Activity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle item selection
-    	
+    	int scale = 32;
         switch (item.getItemId()) {
         	case R.id.quit:
         		app.Stop();
         		return true;
+        	case R.id.bigger:
+        		app.fontSize += scale;
+        		return true;
+        	case R.id.smaller:
+        		app.fontSize -= scale;
+        		if (app.fontSize < 0) {
+        			app.fontSize = scale;
+        		}
+        		return true;        		
         }
         return false;
     }
