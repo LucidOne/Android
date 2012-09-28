@@ -29,6 +29,12 @@ public class EmoFacesAndroid {
 	public int interval = 1500;
 	public Handler handle = null;
 	Random random = new Random();
+	Runnable r = new Runnable() {
+		public void run() {
+			update();
+			handle.postDelayed(this, interval);
+		}
+	};
 	
 	public EmoFacesAndroid(Handler handle) 
 	{
@@ -126,5 +132,13 @@ public class EmoFacesAndroid {
         view.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.CENTER_VERTICAL);
         view.setPadding(0, 0, 0, 0);
         return view;
+	}
+
+	/**
+	 * Stops the application.
+	 */
+	public void Stop() {
+		handle.removeCallbacks(r);
+		this.activity.finish();
 	}
 }
