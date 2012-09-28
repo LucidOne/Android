@@ -20,7 +20,6 @@ public class MainActivity extends Activity {
 	private RelativeLayout relativeLayout = null;
 	private EmoFacesAndroid app = null;
 	private Handler handler = null;
-	int i = 0;
 	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
@@ -32,11 +31,14 @@ public class MainActivity extends Activity {
 	        app.Init(this, relativeLayout);
 	     //   app.Run();
         }
-        handler = new Handler();
-        relativeLayout.setOnTouchListener(new TouchListener(app)); 
-        Timer test = new Timer();
-        test.scheduleAtFixedRate(t, 0, 1000);
+        
         setContentView(relativeLayout);
+        handler = new Handler();
+        handler.postAtTime(r, 3000);
+       // relativeLayout.setOnTouchListener(new TouchListener(app)); 
+        //Timer test = new Timer();
+        //test.scheduleAtFixedRate(t, 0, 1000);
+        
     }
 	
 	 TimerTask t = new TimerTask() {
@@ -45,17 +47,23 @@ public class MainActivity extends Activity {
 			update();
 		}
 	};
-	Runnable r = new Runnable() {
+	
+	private Runnable r = new Runnable() {
 		public void run() {
 			update();
-			handler.postDelayed(r, 1000);
+			handler.postDelayed(this, 3000);
+		}
+	};
+
+	 void update() {
+		String nextEmo = getNextEmotion(this.app.emotions.emotions.keySet(), this.app.emotions.currentEmotion.name);
+		if (nextEmo == null) {
+			throw new IllegalArgumentException("Failed to find argument.");
 		}
 		
-	};
-	
-	 void update() {
-		// update app
-		i++;
+		this.app.emotions.currentEmotion = this.app.emotions.emotions.get(nextEmo);
+		this.app.textView.setText(this.app.emotions.currentEmotion.Emoticon);
+		setContentView(this.app.layout);
 	}
 
     @Override
@@ -112,15 +120,15 @@ public class MainActivity extends Activity {
 			}
 			return false;
 		}
-		
-		private String getNextEmotion(Set<String> keySet, String currentEmotion) {
-			String[] keys = keySet.toArray(new String[0]);
-			for (int i = 0; i < keys.length; i++) {
-				if (keys[i].equals(currentEmotion)) {
-					return keys[(i + 1) % keys.length];
-				}
-			}
-			return "";
-		}
     }
+    
+    private String getNextEmotion(Set<String> keySet, String currentEmotion) {
+		String[] keys = keySet.toArray(new String[0]);
+		for (int i = 0; i < keys.length; i++) {
+			if (keys[i].equals(currentEmotion)) {
+				return keys[(i + 1) % keys.length];
+			}
+		}
+		return "";
+	}
 }
