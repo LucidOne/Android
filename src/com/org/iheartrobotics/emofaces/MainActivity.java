@@ -28,7 +28,6 @@ public class MainActivity extends Activity {
 	     //   app.Run();
         }
         relativeLayout.setOnTouchListener(new TouchListener(app));
-        
         setContentView(relativeLayout);
     }
 
