@@ -1,9 +1,7 @@
 package com.org.iheartrobotics.emofaces;
 
+import java.util.Random;
 import java.util.Set;
-import java.util.Timer;
-import java.util.TimerTask;
-
 import com.org.iheartrobotics.emofaces.R;
 
 import android.os.Bundle;
@@ -20,6 +18,8 @@ public class MainActivity extends Activity {
 	private RelativeLayout relativeLayout = null;
 	private EmoFacesAndroid app = null;
 	private Handler handler = null;
+	static Random random = new Random();
+	private int interval = 1000;
 	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
@@ -34,24 +34,13 @@ public class MainActivity extends Activity {
         
         setContentView(relativeLayout);
         handler = new Handler();
-        handler.postAtTime(r, 3000);
-       // relativeLayout.setOnTouchListener(new TouchListener(app)); 
-        //Timer test = new Timer();
-        //test.scheduleAtFixedRate(t, 0, 1000);
-        
+        handler.postAtTime(r, interval);
     }
-	
-	 TimerTask t = new TimerTask() {
-		@Override
-		public void run() {
-			update();
-		}
-	};
 	
 	private Runnable r = new Runnable() {
 		public void run() {
 			update();
-			handler.postDelayed(this, 3000);
+			handler.postDelayed(this, interval);
 		}
 	};
 
@@ -71,33 +60,6 @@ public class MainActivity extends Activity {
     	menu.add("Select new emotion");
         getMenuInflater().inflate(R.menu.activity_main, menu);
         return true;
-    }
-    
-    @Override
-    protected void onStart() {
-        super.onStart();
-        // The activity is about to become visible.
-    }
-    
-    @Override
-    protected void onResume() {
-        super.onResume();
-        // The activity has become visible (it is now "resumed").
-    }
-    @Override
-    protected void onPause() {
-        super.onPause();
-        // Another activity is taking focus (this activity is about to be "paused").
-    }
-    @Override
-    protected void onStop() {
-        super.onStop();
-        // The activity is no longer visible (it is now "stopped")
-    }
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        // The activity is about to be destroyed.
     }
     
     class TouchListener implements OnTouchListener {
@@ -124,11 +86,10 @@ public class MainActivity extends Activity {
     
     private String getNextEmotion(Set<String> keySet, String currentEmotion) {
 		String[] keys = keySet.toArray(new String[0]);
-		for (int i = 0; i < keys.length; i++) {
-			if (keys[i].equals(currentEmotion)) {
-				return keys[(i + 1) % keys.length];
-			}
+		int i = -1;
+		while (i < 0) {
+			i = random.nextInt(keys.length) - 1;
 		}
-		return "";
+		return keys[i];
 	}
 }
