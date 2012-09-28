@@ -20,7 +20,8 @@ public class EmoFacesAndroid {
 	Activity activity = null;
 	RelativeLayout layout = null;
 	public boolean randomFaces = false;
-	int interval = 1000;
+	public int interval = 1000;
+	
 	public EmoFacesAndroid() 
 	{
 	}
