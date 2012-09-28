@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.app.Activity;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
@@ -32,9 +33,21 @@ public class MainActivity extends Activity {
 	
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-    	menu.add("Select new emotion");
         getMenuInflater().inflate(R.menu.activity_main, menu);
         return true;
+        
+    }
+    
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+    	
+        switch (item.getItemId()) {
+        	case R.id.quit:
+        		app.Stop();
+        		return true;
+        }
+        return false;
     }
     
     class TouchListener implements OnTouchListener {
