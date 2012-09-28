@@ -42,12 +42,12 @@ public class EmoFacesAndroid {
 			// Add action listeners
 			InitializeButtons();
 			
-			if (this.randomFaces) {
+			/*if (this.randomFaces) {
 				if (t== null) {
 					this.activity.runOnUiThread(t = new RandomFaceThread(this));
 					//t.start();
 				}
-			}
+			}*/
 		}
 	}
 	
