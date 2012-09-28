@@ -2,7 +2,9 @@ package com.org.iheartrobotics.emofaces;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.content.res.Resources;
 import android.os.Handler;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
@@ -112,13 +114,15 @@ public class EmoFacesAndroid {
 		
 	@TargetApi(11)
 	public TextView GetCurrentEmotion() {
+		Resources r = activity.getResources();
+		float px = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 106, r.getDisplayMetrics());
         TextView view = new TextView(this.activity);
         String e = emotions.currentEmotion.Emoticon;
         if (e == null) {
         	e = "N/A";
         }
         view.setText(e);
-        view.setTextSize(128.0f);
+        view.setTextSize(px);
         view.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.CENTER_VERTICAL);
         view.setPadding(0, 0, 0, 0);
         return view;
