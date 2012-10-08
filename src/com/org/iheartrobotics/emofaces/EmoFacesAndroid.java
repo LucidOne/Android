@@ -4,6 +4,7 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.*;
 import android.view.View.OnTouchListener;
@@ -38,7 +39,16 @@ public class EmoFacesAndroid extends Activity {
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-	    Init();
+	    try {
+			Init();
+		} catch (EmoFacesException e) {
+			e.printStackTrace();
+			if (handler != null) {
+				Stop();
+			} else {
+				finish();
+			}
+		}
     }
 	
     @Override
@@ -66,7 +76,7 @@ public class EmoFacesAndroid extends Activity {
         return false;
     }
     
-    public void Init()
+    public void Init() throws EmoFacesException
 	{
 		if (emotions == null) {
 	        relativeLayout = new RelativeLayout(this);
@@ -99,8 +109,9 @@ public class EmoFacesAndroid extends Activity {
     
     /**
 	 * Loads the default emotions.
+     * @throws EmoFacesException 
 	 */
-	private void LoadDefaultEmotions() {
+	private void LoadDefaultEmotions() throws EmoFacesException {
 		try {
 			EmoFaceReader r = new EmoFaceReader();
 			for (Emo emo : r.readEmoticonsFromStream(new InputStreamReader(getAssets().open("face_packs/default.json")))) {
@@ -108,8 +119,7 @@ public class EmoFacesAndroid extends Activity {
 			}
 			emotions.currentEmotion = emotions.emotions.get("default");
 		} catch (IOException e) {
-			System.out.println("Failed to load face packs");
-			e.printStackTrace();
+			throw EmoFacesException.InitError(e);
 		}
 	}
 
