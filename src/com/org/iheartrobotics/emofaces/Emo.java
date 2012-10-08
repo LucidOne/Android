@@ -47,15 +47,27 @@ public class Emo {
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj) return true;
+		
 		if (obj == null) return false;
 		if (obj.getClass() != this.getClass())  return false;
-		
 		Emo that = (Emo)obj;
 		if ((this.name != that.name) || (this.Emoticon != that.Emoticon)) return false;
-		
-		//TODO: May remove this?
 		if ((this.Source != null) && (this.Source != that.Source)) return false;
 		
 		return true;
+	}
+	
+	/**
+	 * Create an emo
+	 * @param name - The name of the emo
+	 * @param emoticon - The emoticon representing this emo
+	 * @param source - The source file representing this emo
+	 * @return
+	 */
+	public static Emo CreateEmo(String name, String emoticon, String source) {
+		if ((name == null) || (emoticon == null)) {
+			throw new IllegalArgumentException("'name' or 'emoticon' can be null!");
+		}
+		return new Emo(name, emoticon, source);
 	}
 }

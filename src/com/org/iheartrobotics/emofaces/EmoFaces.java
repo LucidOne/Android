@@ -22,23 +22,6 @@ public class EmoFaces {
 	}
 	
 	/**
-	 * Adds a list of emotions to the current set of emotions
-	 * @param emotions - The list of emotions to be added
-	 */
-	public void addEmoList(ArrayList<Emo> emotions) {
-		for (Emo e : emotions) {			
-			addEmotion(e);
-		}
-	}
-	
-	public void addEmoList(InputStream inputStream) {
-		EmoFaceReader reader = new EmoFaceReader();
-		for (Emo e : reader.readEmoticonsFromStream(new InputStreamReader(inputStream))) {
-			emotions.put(e.name,  e);
-		}
-	}
-	
-	/**
 	 * Get emotions from file
 	 * @param filename - File which contains the emotions to be added
 	 */
@@ -60,11 +43,11 @@ public class EmoFaces {
 	 * @return The emo object, which contains the emoticon and optional source file, or null if the emo doesn't exist
 	 */
 	public Emo getEmo(String name) {
-		return emotions.containsKey(name) ? emotions.get(name) : null;
+		return emotions.get(name);
 	}
 	
 	/**
-	 * Returns all available strings in this set.
+	 * Get all available emotions
 	 * @return A set of all emotions
 	 */
 	public Set<String> getAvailableEmotions() {
@@ -73,16 +56,32 @@ public class EmoFaces {
 	
 	/**
 	 * Updates an existing emo
-	 * @param name - The name of the emo
-	 * @param emoticon - The emoticon representing the emo
-	 * @param source - The file representing the emo
+	 * @param updatedName - The name of the emo
+	 * @param newEmoticon - The emoticon representing the emo
+	 * @param newSource - The file representing the emo
 	 */
-	public void setEmo(String name, String emoticon, String source) {
-		
+	public void updateEmo(String existingName, String newEmoticon, String newSource) {
+		if (!emotions.containsKey(existingName)) {
+			throw new IllegalArgumentException(existingName + " doesn't exist in the set of emotions. Use add() instead.");
+		}
+		emotions.put(existingName, Emo.CreateEmo(existingName,  newEmoticon, newSource));
 	}
 	
-	public void setEmo(String name, String emoticon) 
-	{
-		setEmo(name, emoticon, null);
+	/**
+	 * Updates an existing emo
+	 * @param existingName - The name of an existing emo
+	 * @param newEmoticon - The new emoticon to replace this emo
+	 */
+	public void updateEmo(String existingName, String newEmoticon) {
+		updateEmo(existingName, newEmoticon, null);
+	}
+	
+	/**
+	 * Deletes an existing emo
+	 * @param name - The name of the emo to be deleted
+	 * @return - True, if the emo is deleted. False, if otherwise.
+	 */
+	public boolean deleteEmo(String name) {
+		return (emotions.remove(name) != null);
 	}
 }
