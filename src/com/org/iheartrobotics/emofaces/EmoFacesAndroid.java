@@ -3,6 +3,8 @@ package com.org.iheartrobotics.emofaces;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.drawable.*;
 import android.os.Handler;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -140,5 +142,10 @@ public class EmoFacesAndroid {
 	public void Stop() {
 		handle.removeCallbacks(r);
 		this.activity.finish();
+	}
+	
+	ImageView iv;
+	public void showImage() {
+		iv = (ImageView) findViewById(R.id.imageView1);
 	}
 }
