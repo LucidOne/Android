@@ -1,0 +1,27 @@
+[
+	{
+		"name": "default",
+		"emoticon": "[o_o]",
+		"source": ""
+	},
+	{
+		"name": "sad",
+		"emoticon": "[;_;]",
+		"source": ""
+	},
+	{
+		"name": "tired",
+		"emoticon": "[-_-]",
+		"source": ""
+	},
+	{
+		"name": "confused",
+		"emoticon": "[O_o]",
+		"source": ""
+	},
+	{
+		"name": "bored",
+		"emoticon": "['_']",
+		"source": ""
+	}
+]
