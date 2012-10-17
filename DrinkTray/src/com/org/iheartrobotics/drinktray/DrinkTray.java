@@ -1,4 +1,4 @@
-package com.org.iheartrobotics.allemosmustdie;
+package com.org.iheartrobotics.drinktray;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -16,13 +16,12 @@ import android.widget.RelativeLayout.LayoutParams;
 import java.io.*;
 import java.util.*;
 
-import com.org.iheartrobotics.emofaces.R;
 
 /**
  * Android implementation of the Emo-Faces Program
  * @author Errol Markland
  */
-public class EmoFacesAndroid extends Activity {
+public class DrinkTray extends Activity {
 	
 	private RelativeLayout relativeLayout = null;
 	private Handler handler = null;
@@ -222,7 +221,7 @@ public class EmoFacesAndroid extends Activity {
 		int height = size.y;
 		
 		iv = new ImageView(this);
-		Drawable image = getResources().getDrawable(R.drawable.one);
+		Drawable image = getResources().getDrawable(R.drawable.drinktray_01_temp);
 		iv.setImageDrawable(image);
 		RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(width, height);
         lp.addRule(RelativeLayout.CENTER_IN_PARENT, 1);        

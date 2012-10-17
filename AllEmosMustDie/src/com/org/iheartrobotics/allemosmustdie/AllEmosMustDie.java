@@ -1,4 +1,4 @@
-package com.org.iheartrobotics.drinktray;
+package com.org.iheartrobotics.allemosmustdie;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -22,7 +22,7 @@ import com.org.iheartrobotics.emofaces.R;
  * Android implementation of the Emo-Faces Program
  * @author Errol Markland
  */
-public class EmoFacesAndroid extends Activity {
+public class AllEmosMustDie extends Activity {
 	
 	private RelativeLayout relativeLayout = null;
 	private Handler handler = null;
@@ -86,7 +86,7 @@ public class EmoFacesAndroid extends Activity {
 	        relativeLayout = new RelativeLayout(this);
 	        handler = new Handler();
 			emotions = new EmoFaces();
-/*
+			
 			// Load default emotions and set it
 			LoadDefaultEmotions();
 			textView = getCurrentEmotion();
@@ -108,8 +108,6 @@ public class EmoFacesAndroid extends Activity {
 					return false;
 				}
 			});
-			*/
-			showImage();
 		}
 	}
     
@@ -210,25 +208,5 @@ public class EmoFacesAndroid extends Activity {
 	public void Stop() {
 		handler.removeCallbacks(appThread);
 		finish();
-	}
-	
-	ImageView iv;
-	@TargetApi(13)
-	public void showImage() {
-		Display display = getWindowManager().getDefaultDisplay();
-		Point size = new Point();
-		display.getSize(size);
-		int width = size.x;
-		int height = size.y;
-		
-		iv = new ImageView(this);
-		Drawable image = getResources().getDrawable(R.drawable.one);
-		iv.setImageDrawable(image);
-		RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(width, height);
-        lp.addRule(RelativeLayout.CENTER_IN_PARENT, 1);        
-        lp.addRule(RelativeLayout.CENTER_HORIZONTAL, 1);
-        lp.addRule(RelativeLayout.CENTER_VERTICAL, 1);
-		relativeLayout.addView(iv, lp);
-		setContentView(relativeLayout);
 	}
 }
