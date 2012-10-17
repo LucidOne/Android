@@ -2,83 +2,129 @@ package com.org.iheartrobotics.emofaces;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
-import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.drawable.*;
+import android.graphics.Point;
+import android.graphics.drawable.Drawable;
+import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.util.TypedValue;
-import android.view.Gravity;
-import android.view.MotionEvent;
-import android.view.View;
+import android.view.*;
 import android.view.View.OnTouchListener;
 import android.widget.*;
 import android.widget.RelativeLayout.LayoutParams;
 
 import java.io.*;
-import java.util.Random;
+import java.util.*;
 
 /**
  * Android implementation of the Emo-Faces Program
  * @author Errol Markland
- * TODO: Improve this....overall structure...it's rather messy =x
  */
-public class EmoFacesAndroid {
-	public static int fontSize = 128;
-	EmoFaces emotions = null;
+public class EmoFacesAndroid extends Activity {
+	
+	private RelativeLayout relativeLayout = null;
+	private Handler handler = null;
 	TextView textView = null;
-	Activity activity = null;
-	RelativeLayout layout = null;
-	public boolean randomFaces = false;
-	public int interval = 1500;
-	public Handler handle = null;
-	Random random = new Random();
-	Runnable r = new Runnable() {
+	EmoFaces emotions = null;
+	
+	static Random random = new Random();
+	static int fontSize = 128;
+	int interval = 1500;
+	
+	Runnable appThread = new Runnable() {
 		public void run() {
 			update();
-			handle.postDelayed(this, interval);
+			handler.postDelayed(this, interval);
 		}
 	};
 	
-	public EmoFacesAndroid(Handler handle) 
-	{
-		this.handle = handle; 
-	}
+	@Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+	    try {
+			Init();
+		} catch (EmoFacesException e) {
+			e.printStackTrace();
+			if (handler != null) {
+				Stop();
+			} else {
+				finish();
+			}
+		}
+    }
 	
-	public void Init(Activity activity, RelativeLayout layout)
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.activity_main, menu);
+        return true;
+        
+    }
+    
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+    	int scale = 32;
+        switch (item.getItemId()) {
+        	case R.id.quit:
+        		Stop();
+        		return true;
+        	case R.id.bigger:
+        		changeFontSize(scale);
+        		return true;
+        	case R.id.smaller:
+        		changeFontSize(-scale);
+        		return true;        		
+        }
+        return false;
+    }
+    
+    public void Init() throws EmoFacesException
 	{
-		this.activity = activity;
-		this.layout = layout;
 		if (emotions == null) {
+	        relativeLayout = new RelativeLayout(this);
+	        handler = new Handler();
 			emotions = new EmoFaces();
-			// Load default emotions
+/*
+			// Load default emotions and set it
 			LoadDefaultEmotions();
-			emotions.currentEmotion = emotions.emotions.get("default");
-			textView = GetCurrentEmotion();
-			layout.addView(textView, setLayoutParams());
-			activity.setContentView(layout);
+			textView = getCurrentEmotion();
+		  	RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+	        lp.addRule(RelativeLayout.CENTER_IN_PARENT, 1);        
+	        lp.addRule(RelativeLayout.CENTER_HORIZONTAL, 1);
+	        lp.addRule(RelativeLayout.CENTER_VERTICAL, 1);
+			relativeLayout.addView(textView, lp);
+			setContentView(relativeLayout);
 			
-			setListeners();
+			// Set listeners
+			handler.postDelayed(appThread, interval);
+			relativeLayout.setOnTouchListener(new OnTouchListener() {
+				public boolean onTouch(View v, MotionEvent event) {
+					if (event.getAction() == MotionEvent.ACTION_DOWN) {
+						update();
+						return true;
+					}
+					return false;
+				}
+			});
+			*/
+			showImage();
 		}
 	}
-	
-	void setListeners() {
-		// random face guy
-		handle.postDelayed(new Runnable() {
-			public void run() {
-				update();
-				handle.postDelayed(this, interval);
+    
+    /**
+	 * Loads the default emotions.
+     * @throws EmoFacesException 
+	 */
+	private void LoadDefaultEmotions() throws EmoFacesException {
+		try {
+			EmoFaceReader r = new EmoFaceReader();
+			for (Emo emo : r.readEmoticonsFromStream(new InputStreamReader(getAssets().open("face_packs/default.json")))) {
+				emotions.addEmotion(emo);
 			}
-		}, interval);
-		
-		layout.setOnTouchListener(new OnTouchListener() {
-			public boolean onTouch(View v, MotionEvent event) {
-				if (event.getAction() == MotionEvent.ACTION_DOWN) {
-					update();
-					return true;
-				}
-				return false;
-			}
-		});
+			emotions.currentEmotion = emotions.emotions.get("default");
+		} catch (IOException e) {
+			throw EmoFacesException.InitError(e);
+		}
 	}
 
 	/**
@@ -94,37 +140,12 @@ public class EmoFacesAndroid {
 		emotions.currentEmotion = emotions.emotions.get(nextEmo);
 		textView.setText(emotions.currentEmotion.Emoticon);
 		textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, fontSize);
-		activity.setContentView(layout);
-	}
-	
-	private RelativeLayout.LayoutParams setLayoutParams() 
-    {
-    	RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-        lp.addRule(RelativeLayout.CENTER_IN_PARENT, 1);        
-        lp.addRule(RelativeLayout.CENTER_HORIZONTAL, 1);
-        lp.addRule(RelativeLayout.CENTER_VERTICAL, 1);
-        return lp;
-    }
-	
-	public void SetEmotion(String name) {
-		if (emotions.emotions.containsKey(name)) {
-			emotions.currentEmotion = emotions.emotions.get(name);
-		}
-	}
-	
-	private void LoadDefaultEmotions() {
-		try {
-			InputStream s = this.activity.getAssets().open("face_packs/default.json");
-			emotions.addEmotionsFromFile(s);
-		} catch (IOException e) {
-			System.out.println("Failed to load face packs");
-			e.printStackTrace();
-		}
+		setContentView(relativeLayout);
 	}
 		
 	@TargetApi(11)
-	public TextView GetCurrentEmotion() {
-		TextView view = new TextView(this.activity);
+	public TextView getCurrentEmotion() {
+		TextView view = new TextView(this);
         String e = emotions.currentEmotion.Emoticon;
         if (e == null) {
         	e = "N/A";
@@ -135,17 +156,77 @@ public class EmoFacesAndroid {
         view.setPadding(0, 0, 0, 0);
         return view;
 	}
+	
+	/**
+	 * Set the current emotion
+	 * @param name - The name of the emotion to set.
+	 * @return - True, if the current emotion was changed. False, if otherwise.
+	 */
+	public boolean setCurrentEmotion(String name) {
+		if (emotions.emotions.containsKey(name)) {
+			emotions.currentEmotion = emotions.emotions.get(name);
+			return true;
+		}
+		return false;
+	}
+	
+	/**
+	 * Adds a new emotion to the app.
+	 * @param name - The name of the emotion to be added
+	 * @param emoticon - The textual representation of the emotion
+	 * @return - True, if the emotion was added. False, if otherwise.
+	 */
+	public boolean addEmotion(String name, String emoticon) {
+		if (emotions.getAvailableEmotions().contains(name)) {
+			return false;
+		}
+		emotions.addEmotion(Emo.CreateEmo(name, emoticon, null));
+		return true;
+	}
+	
+	/**
+	 * Removes an existing emotion from the app.
+	 * @param name - The name of the emotion to be removed.
+	 * @return - True, if the emotion was removed. False if otherwise.
+	 */
+	public boolean removeEmotion(String name) {
+		return emotions.deleteEmo(name);
+	}
 
+	
+	public void changeFontSize(int fontSizeChange) {
+		int scale = 32;
+		fontSize += fontSizeChange;
+		if (fontSize < scale) {
+			fontSize = scale;
+		}
+	}
+	
 	/**
 	 * Stops the application.
 	 */
 	public void Stop() {
-		handle.removeCallbacks(r);
-		this.activity.finish();
+		handler.removeCallbacks(appThread);
+		finish();
 	}
 	
 	ImageView iv;
+	@TargetApi(13)
 	public void showImage() {
-		iv = (ImageView) findViewById(R.id.imageView1);
+		Display display = getWindowManager().getDefaultDisplay();
+		Point size = new Point();
+		display.getSize(size);
+		int width = size.x;
+		int height = size.y;
+		
+		iv = new ImageView(this);
+		Drawable image = getResources().getDrawable(R.drawable.one);
+		iv.setImageDrawable(image);
+		RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(width, height);
+        lp.addRule(RelativeLayout.CENTER_IN_PARENT, 1);        
+        lp.addRule(RelativeLayout.CENTER_HORIZONTAL, 1);
+        lp.addRule(RelativeLayout.CENTER_VERTICAL, 1);
+		relativeLayout.addView(iv, lp);
+		setContentView(relativeLayout);
 	}
 }
