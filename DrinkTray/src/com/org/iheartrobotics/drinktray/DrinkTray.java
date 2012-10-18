@@ -2,6 +2,7 @@ package com.org.iheartrobotics.drinktray;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -221,6 +222,7 @@ public class DrinkTray extends Activity {
 		int height = size.y;
 		
 		iv = new ImageView(this);
+		iv.setBackgroundColor(Color.WHITE);
 		Drawable image = getResources().getDrawable(R.drawable.drinktray_01_temp);
 		iv.setImageDrawable(image);
 		RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(width, height);
