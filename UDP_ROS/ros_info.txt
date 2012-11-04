@@ -1,0 +1,47 @@
+http://www.ros.org/wiki/ROS/UDPROS -- UDP ROS
+http://www.ros.org/wiki/ROS/Connection%20Header -- Connection header
+
+=======ABOUT UDPROS HEADERS=======
+Each UDP datagram contains a UDPROS header, followed by message data. The format of the header is as follows:
++---------------------------------+
+|          Connection ID          |
++---------------------------------+
+|Opcode | Msg ID |    Block #     |
++---------------------------------+
+
+Connection ID - This 32-bit value is determined during connection negotiation and is 
+used to denote which connection the datagram is destined for. This parameter 
+allows a single socket to service multiple UDPROS connections.
+
+Opcode - UDPROS supports multiple datagram types. The opcode specifies 
+the datagram type. This 8-bit field can have the following possible values:
+	- DATA0 (0) - This opcode is sent in the first datagram of a ROS message
+	- DATAN (1) - All subsequent datagrams of a ROS message use this opcode
+	- PING (2) - A heartbeat packet is sent periodically to let the other side know that the connection is still alive
+	- ERR (3) - An error packet is used to signal that a connection is closing unexpectedly
+ 
+Message ID - This 8-bit value is incremented for each new message and is 
+used to determine if datagrams have been dropped.
+
+Block # - When the opcode is DATA0, this field contains the total number of UDPROS 
+datagrams expected to complete the ROS message. When the opcode is DATAN, 
+this field contains the current datagram number.
+=======END OF INFO ABOUT UDPROS HEADER======
+
+
+=======ABOUT UDPROS MESSAGES========
+ROS messages are sent to the subscriber in one or more UDPROS 
+datagrams. The first datagram contains the total number of datagrams 
+to expect. Each datagram contains a header followed by serialized ROS 
+message data. The maximum amount of message data per datagram is 
+determined during the connection negotiation. Only the final datagram 
+of a message will contain fewer than the maximum number of bytes.
+=======END OF INFO ABOUT UDPROS MESSAGES========
+
+
+ros reader (UDP support)
+//TODO: Handle errors, and keep alive messages (i.e., figure out those cases)
+
+
+ros writer (UDP support)
+// figure out how to serialize messages (EVERYTHING ARE STRINGS, COMRADE!!)
