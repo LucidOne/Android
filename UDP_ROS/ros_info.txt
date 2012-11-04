@@ -40,8 +40,7 @@ of a message will contain fewer than the maximum number of bytes.
 
 
 ros reader (UDP support)
-//TODO: Handle errors, and keep alive messages (i.e., figure out those cases)
-
+// build this (EVERYTHING ARE STRINGS, COMRADE!!)
 
 ros writer (UDP support)
-// figure out how to serialize messages (EVERYTHING ARE STRINGS, COMRADE!!)
+// figure out how to serialize messages (STRINGS, HOMBRE!)
