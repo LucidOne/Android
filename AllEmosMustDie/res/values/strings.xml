@@ -1,0 +1,10 @@
+<resources>
+
+    <string name="app_name">Drink Tray</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="quit">Close Robo Emo Faces</string>
+    <string name="title_activity_main">Drink Tray</string>
+    <string name="bigger">Bigger Robot</string>
+    <string name="smaller">Smaller Robot</string>
+
+</resources>
