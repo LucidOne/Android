@@ -16,8 +16,6 @@ import android.widget.RelativeLayout.LayoutParams;
 import java.io.*;
 import java.util.*;
 
-import com.org.iheartrobotics.emofaces.R;
-
 /**
  * Android implementation of the Emo-Faces Program
  * @author Errol Markland
