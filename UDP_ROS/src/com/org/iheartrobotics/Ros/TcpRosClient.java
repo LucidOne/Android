@@ -30,12 +30,12 @@ public class TcpRosClient extends RosClient {
 		type: message type
 		*/
 		
-		writer.writeBytes("howdy");
+		writer.writeBytes("howdy\n");
 		writer.flush();
 		
 		// See if the server responses with hello
 		String response = reader.readLine();
-		boolean connectionEstablished = response == "hello";
+		boolean connectionEstablished = response.equals("hello");
 		if (connectionEstablished) {
 			// really make sure that this person who sent the response is indeed who they say they are
 			//EX: Check the connection header type and checksum of the message
@@ -65,5 +65,4 @@ public class TcpRosClient extends RosClient {
 		// TODO Auto-generated method stub
 		
 	}
-
 }
